@@ -1,0 +1,23 @@
+﻿@model IEnumerable<n01618250_Assignment3.Models.Teacher>
+@{
+    ViewBag.Title = "List";
+}
+
+
+<div id="containerlist">
+    <h2>List of teachers</h2><br />
+
+    <form action="/Teacher/List" method="GET">
+        <input type="text" name="SearchKey" />
+        <input type="submit" value="Search" />
+    </form><br />
+
+    @foreach (n01618250_Assignment3.Models.Teacher Teacher in Model)
+        {
+            <div class="listitem row">
+                <div><a href="/Teacher/Show/@Teacher.TeacherId">@Teacher.TeacherFName @Teacher.TeacherLName</a></div>
+                <hr />
+            </div>
+        }
+</div>
+
