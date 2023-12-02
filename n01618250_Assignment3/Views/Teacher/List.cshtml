@@ -5,6 +5,9 @@
 
 
 <div id="containerlist">
+    <nav>
+        <a class="navlink" href="/Teacher/New">New Teacher</a>
+    </nav>
     <h2>List of teachers</h2><br />
 
     <form action="/Teacher/List" method="GET">
@@ -13,11 +16,11 @@
     </form><br />
 
     @foreach (n01618250_Assignment3.Models.Teacher Teacher in Model)
-        {
-            <div class="listitem row">
-                <div><a href="/Teacher/Show/@Teacher.TeacherId">@Teacher.TeacherFName @Teacher.TeacherLName</a></div>
-                <hr />
-            </div>
-        }
+    {
+        <div class="listitem row">
+            <div><a href="/Teacher/Show/@Teacher.TeacherId">@Teacher.TeacherFName @Teacher.TeacherLName</a></div>
+            <hr />
+        </div>
+    }
 </div>
 

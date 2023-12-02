@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -49,6 +50,36 @@ namespace n01618250_Assignment3.Controllers
         {
             TeacherDataController controller = new TeacherDataController();
             controller.DeleteTeacher(id);
+            return RedirectToAction("List");
+        }
+
+        // Get : /Teacher/New
+        public ActionResult New()
+        {
+            return View();
+        }
+
+        // POST : /Teacher/Create
+        [HttpPost]
+        public ActionResult Create(string TeacherFname, string TeacherLname, string TeacherEmployeeNo, string TeacherSalary) 
+        {
+            //Identify that this method is running
+            //Identify the inputs provided from the form
+            Debug.WriteLine("Create method");
+            Debug.WriteLine(TeacherFname);
+            Debug.WriteLine(TeacherLname);
+            Debug.WriteLine(TeacherEmployeeNo);
+            Debug.WriteLine(TeacherSalary);
+
+            Teacher NewTeacher = new Teacher();
+            NewTeacher.TeacherFName = TeacherFname;
+            NewTeacher.TeacherLName = TeacherLname;
+            NewTeacher.EmployeeNumber = TeacherEmployeeNo;
+            NewTeacher.Salary = TeacherSalary;
+
+            TeacherDataController controller = new TeacherDataController();
+            controller.AddTeacher(NewTeacher);
+
             return RedirectToAction("List");
         }
     }

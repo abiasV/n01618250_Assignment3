@@ -8,7 +8,9 @@ using System.Web.Http;
 using n01618250_Assignment3.Models;
 // use MySQL.Data
 using MySql.Data.MySqlClient;
+using System.Web.Http.Cors;
 using System.Globalization;
+using System.Security.Cryptography;
 
 namespace n01618250_Assignment3.Controllers
 {
@@ -27,7 +29,7 @@ namespace n01618250_Assignment3.Controllers
         /// </example>
         [HttpGet]
         [Route("api/TeacherData/ListTeachers/{SearchKey?}")]
-
+        [EnableCors(origins:"*", methods:"*", headers:"*")]
         public List<Teacher> ListTeachers(string SearchKey=null)
         {
             //create a connection
@@ -61,7 +63,7 @@ namespace n01618250_Assignment3.Controllers
                 string EmployeeNumber = ResultSet["employeenumber"].ToString();
                 //get the time that the teacher has been hired
                 DateTime HireDate = (DateTime)(ResultSet["hiredate"]);
-                string formattedDate = HireDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+                string formattedDate = HireDate.ToString("dd-MMM-yyyy", CultureInfo.InvariantCulture);
                 //get the salary that the teacher receives
                 string Salary = ResultSet["salary"].ToString();
 
@@ -121,7 +123,7 @@ namespace n01618250_Assignment3.Controllers
             {
                 //get the time that the teacher has been hired
                 DateTime HireDate = (DateTime)(ResultSet["hiredate"]);
-                string formattedDate = HireDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+                string formattedDate = HireDate.ToString("dd-MMM-yyyy");
 
                 //set the information for the object
                 SelectedTeachers.TeacherId = Convert.ToInt32(ResultSet["teacherid"]);
@@ -166,6 +168,33 @@ namespace n01618250_Assignment3.Controllers
             cmd.ExecuteNonQuery();
 
             Conn.Close();
+        }
+
+        [HttpPost]
+        public void AddTeacher([FromBody]Teacher NewTeacher)
+        {
+            //create a connection
+            MySqlConnection Conn = School.AccessDatabase();
+
+            //Open the connection
+            Conn.Open();
+
+            //Create a command
+            MySqlCommand Command = Conn.CreateCommand();
+
+            //command text SQL QUERY
+            Command.CommandText = "insert into teachers(teacherfname, teacherlname, employeenumber, hiredate, salary) values (@TeacherFName, @TeacherLName, @EmployeeNumber, CURRENT_DATE(), @Salary)";
+            Command.Parameters.AddWithValue("@TeacherFName", NewTeacher.TeacherFName);
+            Command.Parameters.AddWithValue("@Teacherlname", NewTeacher.TeacherLName);
+            Command.Parameters.AddWithValue("@EmployeeNumber", NewTeacher.EmployeeNumber);
+            Command.Parameters.AddWithValue("@Salary", NewTeacher.Salary);
+            Command.Prepare();
+
+            Command.ExecuteNonQuery();
+            Conn.Close();
+
+            //Get a Result Set for our response
+            //MySqlDataReader ResultSet = Command.ExecuteReader();
         }
     }
 }
