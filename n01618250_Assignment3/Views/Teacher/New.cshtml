@@ -30,6 +30,10 @@ If the value is valid, allow the request to go through.
             showMessage.innerHTML = 'Salary must be a valid number!';
             return false;
         }
+        if (date === '') {
+            showMessage.innerHTML = 'you should enter a valid date!';
+            return false;
+        }
     }
 </script>
 <!-- ask the user for the teacher info -->

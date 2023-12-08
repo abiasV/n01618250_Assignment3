@@ -63,7 +63,7 @@ namespace n01618250_Assignment3.Controllers
                 //get the teacher employee number
                 string EmployeeNumber = ResultSet["employeenumber"].ToString();
                 //get the time that the teacher has been hired
-                DateTime HireDate = (DateTime)(ResultSet["hiredate"]);
+                string HireDate = ResultSet["hiredate"].ToString();
                 //string formattedDate = HireDate.ToString("dd-MMM-yyyy", CultureInfo.InvariantCulture);
                 //get the salary that the teacher receives
                 string Salary = ResultSet["salary"].ToString();
@@ -123,7 +123,7 @@ namespace n01618250_Assignment3.Controllers
             while (ResultSet.Read())
             {
                 //get the time that the teacher has been hired
-                DateTime HireDate = (DateTime)(ResultSet["hiredate"]);
+                //DateTime HireDate = (DateTime)(ResultSet["hiredate"]);
                 //string formattedDate = HireDate.ToString("dd-MMM-yyyy");
 
                 //set the information for the object
@@ -131,7 +131,7 @@ namespace n01618250_Assignment3.Controllers
                 SelectedTeachers.TeacherFName = ResultSet["teacherfname"].ToString();
                 SelectedTeachers.TeacherLName = ResultSet["teacherlname"].ToString();
                 SelectedTeachers.EmployeeNumber = ResultSet["employeenumber"].ToString();
-                SelectedTeachers.HireDate = HireDate.ToString();
+                SelectedTeachers.HireDate = ResultSet["hiredate"].ToString();
                 SelectedTeachers.Salary = ResultSet["salary"].ToString();
 
             }
@@ -211,7 +211,7 @@ namespace n01618250_Assignment3.Controllers
             //insert into teachers (teacherfname, teacherlname, employeenumber, hiredate, salary) values ('ali', 'koon', 'T201', '2023-12-04', '66.65');
 
             // server validation, the validation that happens on the server
-            if (NewTeacher.TeacherFName == null) return;
+            //if (NewTeacher.TeacherFName == null) return;
 
             //create a connection
             MySqlConnection Conn = School.AccessDatabase();
@@ -221,14 +221,14 @@ namespace n01618250_Assignment3.Controllers
 
             //Create a command
             MySqlCommand Command = Conn.CreateCommand();
-
+            string query = "insert into teachers(teacherfname, teacherlname, employeenumber, hiredate, salary) values (@teacherfname, @teacherlname, @employeenumber, @hiredate, @salary)";
             //command text SQL QUERY
-            Command.CommandText = "insert into teachers(teacherfname, teacherlname, employeenumber, hiredate, salary) values (@teacherfname, @teacherlname, @employeenumber, @hiredate, @salary)";
+            Command.CommandText = query;
             //put new teacher info into this query
             Command.Parameters.AddWithValue("@teacherfname", NewTeacher.TeacherFName);
             Command.Parameters.AddWithValue("@teacherlname", NewTeacher.TeacherLName);
             Command.Parameters.AddWithValue("@employeenumber", NewTeacher.EmployeeNumber);
-            Command.Parameters.AddWithValue("@hiredate", NewTeacher.HireDate.ToString());
+            Command.Parameters.AddWithValue("@hiredate", NewTeacher.HireDate);
             Command.Parameters.AddWithValue("@salary", NewTeacher.Salary);
             Command.Prepare();
 

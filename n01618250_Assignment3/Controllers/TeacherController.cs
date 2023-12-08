@@ -64,18 +64,25 @@ namespace n01618250_Assignment3.Controllers
 
         // POST : /Teacher/Create
         [HttpPost]
-        public ActionResult Create(Teacher NewTeacher) 
+        public ActionResult Create(string TeacherFname, string TeacherLname, string TeacherEmployeeNo, string TeacherHireDate, string TeacherSalary) 
         {
             //Capture the teacher information posted to us
-            Debug.WriteLine("Create name" + NewTeacher.TeacherFName);
-            Debug.WriteLine("Create time" + NewTeacher.HireDate);
+            Debug.WriteLine("Create name" + TeacherFname);
+            //Debug.WriteLine("Create time1" + HireDate);
+            Debug.WriteLine("Create time2" + TeacherHireDate);
+
+
+            Teacher NewTeacher = new Teacher();
+            NewTeacher.TeacherFName = TeacherFname;
+            NewTeacher.TeacherLName = TeacherLname;
+            NewTeacher.EmployeeNumber = TeacherEmployeeNo;
+            NewTeacher.HireDate = TeacherHireDate;
+            NewTeacher.Salary = TeacherSalary;
             //actually add the teacher information to the database
             TeacherDataController Controller = new TeacherDataController();
             Controller.AddTeacher(NewTeacher);
-
             //go back to the original list of articles
 
-            
             //this redirects to the list teachers method
             return RedirectToAction("List");
         }
