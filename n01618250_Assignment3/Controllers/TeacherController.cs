@@ -86,5 +86,38 @@ namespace n01618250_Assignment3.Controllers
             //this redirects to the list teachers method
             return RedirectToAction("List");
         }
+
+        //Get: /Teacher/Edit/{TeacherId}
+        //routes to Views/Teacher/Edit.cshtml
+
+        public ActionResult Edit(int id)
+        {
+            TeacherDataController Controller = new TeacherDataController();
+
+            // I want to display the teacher information
+
+            Teacher TeacherSelected = Controller.FindTeacher(id);
+           
+            return View(TeacherSelected);
+        }
+
+        // POST : /Teacher/Update/{TeacherId}
+        //Update Teacher -> redirect to the show Teacher page
+        [HttpPost]
+        public ActionResult Update(int id, Teacher UpdatedTeacher )
+        {
+            //confirm for receive informations
+            Debug.WriteLine("Teacher FName " + UpdatedTeacher.TeacherFName);
+            Debug.WriteLine("Teacher LName " + UpdatedTeacher.TeacherLName);
+            Debug.WriteLine("Teacher EmployeeNo " + UpdatedTeacher.EmployeeNumber);
+            Debug.WriteLine("Teacher HireDate " + UpdatedTeacher.HireDate);
+            Debug.WriteLine("Teacher Salary " + UpdatedTeacher.Salary);
+            //Update teahcher
+            TeacherDataController Controller = new TeacherDataController();
+            Controller.UpdateTeacher(id, UpdatedTeacher);
+
+            // Return to the show page
+            return RedirectToAction("Show/" + id);
+        }
     }
 }

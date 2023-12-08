@@ -21,23 +21,38 @@ nav {
     margin-bottom: 30px;
 }
 
-.navlink {
-    float: left;
-}
-
 .dellink {
-    float: right;
-    color: #dd1111;
+    font-size: 20px;
+    padding: 12px;
+    border: 1px solid green;
+    color: #ff6a00;
+    text-decoration: none;
+    border-radius:20px;
 }
 
-.delbutton {
-    display: block;
-    margin: 0 auto;
-    background: #dd1111;
-    color: #fff;
-    border: 2px solid #000;
-    border-radius: 3px;
-    cursor: pointer;
+.dellink:hover {
+    color: #ff0000;
+    text-decoration: underline;
+}
+
+.editlink {
+    font-size: 20px;
+    padding: 10px;
+    border: 1px solid green;
+    color: #4cff00;
+    text-decoration: none;
+    border-radius: 20px;
+}
+
+.editlink:hover {
+   color: green;
+   text-decoration: underline;
+}
+
+.process {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 #containerlist, #containershow {

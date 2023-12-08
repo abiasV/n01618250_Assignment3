@@ -4,18 +4,21 @@
     ViewBag.Title = "Show";
 }
 
-
 <div id="containershow">
     <nav>
         <a class="navlink" href="/Teacher/List">Back To Teachers</a>
-        <a class="dellink" href="/Teacher/DeleteConfirm/@Model.TeacherId">Delete</a>
     </nav>
-    <h2>You have Choosen teacher number: @Model.TeacherId</h2>
+    <h2>You have Choosen teacher ID: @Model.TeacherId</h2>
     <br />
     <p>Full Name: <b>@Model.TeacherFName @Model.TeacherLName</b></p><hr />
     <p>Employee Number: <b>@Model.EmployeeNumber</b></p><hr />
     <p>Date of Hire: <b>@Model.HireDate</b></p><hr />
     <p>Salary: <b>@Model.Salary</b></p>
     <p>Course(s): <b>"How can I join"</b></p>
+
+    <div class="process">
+        <a class="editlink" href="/Teacher/Edit/@Model.TeacherId">Update</a>
+        <a class="dellink" href="/Teacher/DeleteConfirm/@Model.TeacherId">Delete</a>
+    </div>
 
 </div>

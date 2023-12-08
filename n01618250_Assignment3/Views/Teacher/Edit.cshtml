@@ -1,0 +1,39 @@
+﻿@model n01618250_Assignment3.Models.Teacher
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Editing a specific teacher</h2>
+
+<p>@Model.TeacherFName</p>
+
+<form action="/Teacher/Update/@Model.TeacherId" method="POST">
+    <div>
+        <label for="TeacherFname">First Name:</label>
+        <input type="text" value="@Model.TeacherFName" name="TeacherFname" />
+
+    </div>
+    <div>
+        <label for="TeacherLname">Last Name:</label>
+        <input type="text" value="@Model.TeacherLName" name="TeacherLname" />
+
+    </div>
+    <div>
+        <label for="TeacherEmployeeNo">Employee No:</label>
+        <input type="text" value="@Model.EmployeeNumber" name="EmployeeNumber" />
+
+    </div>
+    <div>
+        <label for="TeacherHireDate">Hire Date:</label>
+        <input type="date" value="@Model.HireDate" name="HireDate" />
+    </div>
+    <div>
+        <label for="TeacherSalary">Salary:</label>
+        <input type="text" value="@Model.Salary" name="Salary" />
+
+    </div><br />
+    <div>
+        <input type="submit" value="Update Teacher" />
+    </div>
+</form>

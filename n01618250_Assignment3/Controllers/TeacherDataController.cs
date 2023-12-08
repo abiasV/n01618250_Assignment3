@@ -9,8 +9,7 @@ using n01618250_Assignment3.Models;
 // use MySQL.Data
 using MySql.Data.MySqlClient;
 using System.Web.Http.Cors;
-using System.Globalization;
-using System.Security.Cryptography;
+using System.Diagnostics;
 
 namespace n01618250_Assignment3.Controllers
 {
@@ -234,6 +233,57 @@ namespace n01618250_Assignment3.Controllers
 
             Command.ExecuteNonQuery();
             Conn.Close();
+        }
+
+        /// <summary>
+        /// updates the teacher in the database given the teacher id and teacher information
+        /// </summary>
+        /// <param name="TeacherId">teacher id to update</param>
+        /// <param name="UpdatedTeacher">teacher object containing the new information</param>
+        /// <example>
+        /// POST api/TeacherData/UpdateTeacher/8
+        /// POST DATA / FORM DATA / REQUEST BODY
+        /// {
+        ///     "TeacherFName": "Sara",
+        ///     "TeacherLName": "chris",
+        ///     "EmployeeNumber": "P142",
+        ///     "Salary": "66.23",
+        ///     "HireDate": "2023-12-09"
+        /// }
+        /// curl -d @teacherdata.json -H "Content-Type: application/json" http://localhost:14272/api/TeacherData/UpdateTeacher/23
+        /// </example>
+        /// <return>No Return</return>
+        [HttpPost]
+        [Route("api/TeacherData/UpdateTeacher/{TeacherId}")]
+        public void UpdateTeacher(int TeacherId, [FromBody]Teacher UpdatedTeacher)
+        {
+            Debug.WriteLine("API Reached");
+            Debug.WriteLine("The ID is "+ TeacherId);
+            Debug.WriteLine("theacher Name is "+ UpdatedTeacher.TeacherFName +" " + UpdatedTeacher.TeacherLName);
+            Debug.WriteLine("teacher empNo and Date " + UpdatedTeacher.EmployeeNumber + " " + UpdatedTeacher.HireDate);
+            // connect to database and run query
+            MySqlConnection Conn = School.AccessDatabase();
+            
+            Conn.Open();
+            MySqlCommand Cmd = Conn.CreateCommand();
+
+            string query = "UPDATE  teachers SET teacherfname=@fname, teacherlname=@lname, employeenumber=@empNo, hiredate=@hireDate, salary=@salary WHERE teacherid=@id;";
+
+            Cmd.CommandText = query;
+            Cmd.Parameters.AddWithValue("@fname", UpdatedTeacher.TeacherFName);
+            Cmd.Parameters.AddWithValue("@lname", UpdatedTeacher.TeacherLName);
+            Cmd.Parameters.AddWithValue("@empNo", UpdatedTeacher.EmployeeNumber);
+            Cmd.Parameters.AddWithValue("@hireDate", UpdatedTeacher.HireDate);
+            Cmd.Parameters.AddWithValue("@salary", UpdatedTeacher.Salary);
+            Cmd.Parameters.AddWithValue("@id", TeacherId);
+
+            Cmd.Prepare();
+
+            Cmd.ExecuteNonQuery();
+
+            Conn.Close();
+
+            return;
         }
     }
 }
