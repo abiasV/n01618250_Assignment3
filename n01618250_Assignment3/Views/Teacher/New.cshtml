@@ -16,57 +16,64 @@ If the value is valid, allow the request to go through.
 
 <script>
     alert("hiiiiiiiii");
-    validateForm = function () {
-        var firstName = document.getElementById('TeacherFname').value;
-        var lastName = document.getElementById('TeacherLname').value;
-        var salary = document.getElementById('TeacherSalary').value;
-        var date = document.getElementById('TeacherHireDate').value;
+
+    function validateForm() {
+        var firstName = document.forms["myForm"]["TeacherFname"].value;
+        var lastName = document.forms["myForm"]["TeacherLname"].value;
+        var empoloyeeNo = document.forms["myForm"]["TeacherEmployeeNo"].value;
+        var date = document.forms["myForm"]["TeacherHireDate"].value;
+        var salary = document.forms["myForm"]["TeacherSalary"].value;
         var showMessage = document.getElementById("messagebox");
         if (firstName.trim() === '' || lastName.trim() === '') {
             showMessage.innerHTML = 'First name and last name are required!';
             return false;
         }
-        if (isNaN(parseFloat(salary)) || !isFinite(salary)) {
-            showMessage.innerHTML = 'Salary must be a valid number!';
+        if (empoloyeeNo === '') {
+            showMessage.innerHTML = 'you should enter employee number!';
             return false;
         }
         if (date === '') {
             showMessage.innerHTML = 'you should enter a valid date!';
             return false;
         }
+        if (isNaN(parseFloat(salary)) || !isFinite(salary)) {
+            showMessage.innerHTML = 'Salary must be a valid number!';
+            return false;
+        }
     }
 </script>
 <!-- ask the user for the teacher info -->
-<form method="POST" id="FrmIndex" action="/Teacher/Create">
+<form method="POST" id="myForm" action="/Teacher/Create" onsubmit="return validateForm()">
     <div>
-        <label for="TeacherFname">First Name:</label>
+        <label for="TeacherFname">First Name:*</label>
         <input type="text" id="TeacherFname" name="TeacherFname" />
 
     </div>
     <div>
-        <label for="TeacherLname">Last Name:</label>
+        <label for="TeacherLname">Last Name:*</label>
         <input type="text" id="TeacherLname" name="TeacherLname" />
 
     </div>
     <div>
-        <label for="TeacherEmployeeNo">Employee No:</label>
+        <label for="TeacherEmployeeNo">Employee No:*</label>
         <input type="text" id="TeacherEmployeeNo" name="TeacherEmployeeNo" />
 
     </div>
     <div>
-        <label for="TeacherSalary">Salary:</label>
-        <input type="text" id="TeacherSalary" name="TeacherSalary" />
-
-    </div>
-    <div>
-        <label for="TeacherHireDate">Hire Date:</label>
+        <label for="TeacherHireDate">Hire Date:*</label>
         <input type="date" id="TeacherHireDate" name="TeacherHireDate" />
         <!--  -->
     </div>
     <div>
-        <input type="submit" value="Create Teacher" onsubmit="validateForm();" />
+        <label for="TeacherSalary">Salary:*</label>
+        <input type="text" id="TeacherSalary" name="TeacherSalary" />
+
     </div>
+    <div>
+        <input type="submit" value="Create Teacher" />
+    </div>
+    <div style="color: red" id="messagebox"></div>
 </form>
-<div id="messagebox"></div>
+
 
 
