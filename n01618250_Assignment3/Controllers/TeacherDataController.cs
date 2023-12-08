@@ -23,6 +23,7 @@ namespace n01618250_Assignment3.Controllers
         /// <returns>
         /// A list of teacher objects
         /// </returns>
+        /// <param name="SearchKey"></param>
         /// <example>show all the record of teacher table in school database
         /// Get /api/TeacherData/ListTeachers => [{"TeacherId":"3", "TeacherFName":"Linda", "TeacherLName":"Chan", "EmployeeNumber": "T382", "HireDate": "2015-08-22", "Salary":"60.22"}]
         /// [{"TeacherId":"8", "TeacherFName":"Dana", "TeacherLName":"Ford", "EmployeeNumber": "T401", "HireDate": "2014-06-26", "Salary":"71.15"}]
@@ -63,7 +64,7 @@ namespace n01618250_Assignment3.Controllers
                 string EmployeeNumber = ResultSet["employeenumber"].ToString();
                 //get the time that the teacher has been hired
                 DateTime HireDate = (DateTime)(ResultSet["hiredate"]);
-                string formattedDate = HireDate.ToString("dd-MMM-yyyy", CultureInfo.InvariantCulture);
+                //string formattedDate = HireDate.ToString("dd-MMM-yyyy", CultureInfo.InvariantCulture);
                 //get the salary that the teacher receives
                 string Salary = ResultSet["salary"].ToString();
 
@@ -74,7 +75,7 @@ namespace n01618250_Assignment3.Controllers
                 NewTeacher.TeacherFName = TeacherFName;
                 NewTeacher.TeacherLName = TeacherLName;
                 NewTeacher.EmployeeNumber = EmployeeNumber;
-                NewTeacher.HireDate = formattedDate;
+                NewTeacher.HireDate = HireDate.ToString();
                 NewTeacher.Salary = Salary;
 
                 // Add it to the Teachers list
@@ -123,14 +124,14 @@ namespace n01618250_Assignment3.Controllers
             {
                 //get the time that the teacher has been hired
                 DateTime HireDate = (DateTime)(ResultSet["hiredate"]);
-                string formattedDate = HireDate.ToString("dd-MMM-yyyy");
+                //string formattedDate = HireDate.ToString("dd-MMM-yyyy");
 
                 //set the information for the object
                 SelectedTeachers.TeacherId = Convert.ToInt32(ResultSet["teacherid"]);
                 SelectedTeachers.TeacherFName = ResultSet["teacherfname"].ToString();
                 SelectedTeachers.TeacherLName = ResultSet["teacherlname"].ToString();
                 SelectedTeachers.EmployeeNumber = ResultSet["employeenumber"].ToString();
-                SelectedTeachers.HireDate = formattedDate;
+                SelectedTeachers.HireDate = HireDate.ToString();
                 SelectedTeachers.Salary = ResultSet["salary"].ToString();
 
             }
@@ -143,11 +144,18 @@ namespace n01618250_Assignment3.Controllers
 
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
+        
         /// <example>POST: /api/TeacherData/DeleteTeacher/{1}</example>
+        /// This method deletes a teacher from the database based on the provided teacher ID.
+        /// <summary>
+        /// Deletes a teacher from the database based on the provided teacher ID.
+        /// </summary>
+        /// <param name="id">The ID of the teacher to be deleted from the database.</param>
+        /// <example>
+        /// POST /api/TeacherData/DeleteTeacher/5
+        /// </example>
+        /// <returns>HTTP status code 200 OK upon successful deletion of the teacher</returns>
+
         [HttpPost]
         public void DeleteTeacher(int id)
         {
@@ -170,9 +178,41 @@ namespace n01618250_Assignment3.Controllers
             Conn.Close();
         }
 
+        /// <summary>
+        /// Adds a new teacher to the database.
+        /// </summary>
+        /// <param name="NewTeacher">The Teacher object containing details of the new teacher to be added</param>
+        /// <returns>HTTP status code 200 OK if the teacher is successfully added</returns>
+        /// If the data is valid, the method inserts the teacher's details, including first name, last name, employee number, and salary into the teachers table.
+        /// <example>
+        /// POST /api/TeacherData/AddTeacher
+        /// FORM DATA / POST DATA:
+        /// {
+        ///     "TeacherFName": "Abbas",
+        ///     "TeacherLName": "Vaziri",
+        ///     "EmployeeNumber": "T123",
+        ///     "Salary": "22000",
+        ///     "HireDate": "2023-12-04"
+        /// }
+        /// </example>
+        /// <example>
+        /// curl -d @teacher.json -H "Content-Type: application/json" http://localhost:14272/api/TeacherData/addTeacher 
+     
+        /// curl -d "{\"TeacherFName\": \"Abbas\", \"TeacherLName\": \"Vaziri\", \"EmployeeNumber\": \"T123\", \"Salary\": \"22000\", \"HireDate\": \"2023-12-04\"}" -H "Content-Type: application/json" http://localhost:14272/api/TeacherData/addTeacher
+        /// curl -d @teacher.json
+        /// </example>
+
         [HttpPost]
+        [EnableCors(origins: "*", methods: "*", headers: "*")]
         public void AddTeacher([FromBody]Teacher NewTeacher)
         {
+            //assume that the information is received correctly
+            //contact the database and execute a query
+            //insert into teachers (teacherfname, teacherlname, employeenumber, hiredate, salary) values ('ali', 'koon', 'T201', '2023-12-04', '66.65');
+
+            // server validation, the validation that happens on the server
+            if (NewTeacher.TeacherFName == null) return;
+
             //create a connection
             MySqlConnection Conn = School.AccessDatabase();
 
@@ -183,18 +223,17 @@ namespace n01618250_Assignment3.Controllers
             MySqlCommand Command = Conn.CreateCommand();
 
             //command text SQL QUERY
-            Command.CommandText = "insert into teachers(teacherfname, teacherlname, employeenumber, hiredate, salary) values (@TeacherFName, @TeacherLName, @EmployeeNumber, CURRENT_DATE(), @Salary)";
-            Command.Parameters.AddWithValue("@TeacherFName", NewTeacher.TeacherFName);
-            Command.Parameters.AddWithValue("@Teacherlname", NewTeacher.TeacherLName);
-            Command.Parameters.AddWithValue("@EmployeeNumber", NewTeacher.EmployeeNumber);
-            Command.Parameters.AddWithValue("@Salary", NewTeacher.Salary);
+            Command.CommandText = "insert into teachers(teacherfname, teacherlname, employeenumber, hiredate, salary) values (@teacherfname, @teacherlname, @employeenumber, @hiredate, @salary)";
+            //put new teacher info into this query
+            Command.Parameters.AddWithValue("@teacherfname", NewTeacher.TeacherFName);
+            Command.Parameters.AddWithValue("@teacherlname", NewTeacher.TeacherLName);
+            Command.Parameters.AddWithValue("@employeenumber", NewTeacher.EmployeeNumber);
+            Command.Parameters.AddWithValue("@hiredate", NewTeacher.HireDate.ToString());
+            Command.Parameters.AddWithValue("@salary", NewTeacher.Salary);
             Command.Prepare();
 
             Command.ExecuteNonQuery();
             Conn.Close();
-
-            //Get a Result Set for our response
-            //MySqlDataReader ResultSet = Command.ExecuteReader();
         }
     }
 }

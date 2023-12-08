@@ -36,6 +36,7 @@ namespace n01618250_Assignment3.Controllers
         }
 
         // Get /Teacher/DeleteConfirm/{id}
+        [HttpGet]
         public ActionResult DeleteConfirm(int id)
         {
             TeacherDataController controller = new TeacherDataController();
@@ -46,6 +47,7 @@ namespace n01618250_Assignment3.Controllers
         }
 
         //Post : /Teacher/Delete/{id}
+        [HttpPost]
         public ActionResult Delete(int id)
         {
             TeacherDataController controller = new TeacherDataController();
@@ -54,6 +56,7 @@ namespace n01618250_Assignment3.Controllers
         }
 
         // Get : /Teacher/New
+        //Route to /Views/Teacher/New.cshtml
         public ActionResult New()
         {
             return View();
@@ -61,25 +64,19 @@ namespace n01618250_Assignment3.Controllers
 
         // POST : /Teacher/Create
         [HttpPost]
-        public ActionResult Create(string TeacherFname, string TeacherLname, string TeacherEmployeeNo, string TeacherSalary) 
+        public ActionResult Create(Teacher NewTeacher) 
         {
-            //Identify that this method is running
-            //Identify the inputs provided from the form
-            Debug.WriteLine("Create method");
-            Debug.WriteLine(TeacherFname);
-            Debug.WriteLine(TeacherLname);
-            Debug.WriteLine(TeacherEmployeeNo);
-            Debug.WriteLine(TeacherSalary);
+            //Capture the teacher information posted to us
+            Debug.WriteLine("Create name" + NewTeacher.TeacherFName);
+            Debug.WriteLine("Create time" + NewTeacher.HireDate);
+            //actually add the teacher information to the database
+            TeacherDataController Controller = new TeacherDataController();
+            Controller.AddTeacher(NewTeacher);
 
-            Teacher NewTeacher = new Teacher();
-            NewTeacher.TeacherFName = TeacherFname;
-            NewTeacher.TeacherLName = TeacherLname;
-            NewTeacher.EmployeeNumber = TeacherEmployeeNo;
-            NewTeacher.Salary = TeacherSalary;
+            //go back to the original list of articles
 
-            TeacherDataController controller = new TeacherDataController();
-            controller.AddTeacher(NewTeacher);
-
+            
+            //this redirects to the list teachers method
             return RedirectToAction("List");
         }
     }

@@ -1,30 +1,68 @@
-﻿
+﻿@model n01618250_Assignment3.Models.Teacher
+
+
 @{
     ViewBag.Title = "New";
 }
 
 <h2>New Teacher</h2>
-<form method="POST" action="/Teacher/Create">
+
+<!--
+JavaScript: on form submit, block the request. Use the document object model to get the input text.
+Check the Value of the input text. If the value is not valid, block their request to the web server.
+If the value is valid, allow the request to go through.
+-->
+
+
+<script>
+    alert("hiiiiiiiii");
+    validateForm = function () {
+        var firstName = document.getElementById('TeacherFname').value;
+        var lastName = document.getElementById('TeacherLname').value;
+        var salary = document.getElementById('TeacherSalary').value;
+        var date = document.getElementById('TeacherHireDate').value;
+        var showMessage = document.getElementById("messagebox");
+        if (firstName.trim() === '' || lastName.trim() === '') {
+            showMessage.innerHTML = 'First name and last name are required!';
+            return false;
+        }
+        if (isNaN(parseFloat(salary)) || !isFinite(salary)) {
+            showMessage.innerHTML = 'Salary must be a valid number!';
+            return false;
+        }
+    }
+</script>
+<!-- ask the user for the teacher info -->
+<form method="POST" id="FrmIndex" action="/Teacher/Create">
     <div>
         <label for="TeacherFname">First Name:</label>
         <input type="text" id="TeacherFname" name="TeacherFname" />
+
     </div>
     <div>
         <label for="TeacherLname">Last Name:</label>
         <input type="text" id="TeacherLname" name="TeacherLname" />
+
     </div>
     <div>
         <label for="TeacherEmployeeNo">Employee No:</label>
         <input type="text" id="TeacherEmployeeNo" name="TeacherEmployeeNo" />
+
     </div>
     <div>
         <label for="TeacherSalary">Salary:</label>
         <input type="text" id="TeacherSalary" name="TeacherSalary" />
+
     </div>
     <div>
-        <input type="submit" value="Create Author" />
+        <label for="TeacherHireDate">Hire Date:</label>
+        <input type="date" id="TeacherHireDate" name="TeacherHireDate" />
+        <!--  -->
+    </div>
+    <div>
+        <input type="submit" value="Create Teacher" onsubmit="validateForm();" />
     </div>
 </form>
-
+<div id="messagebox"></div>
 
 
