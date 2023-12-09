@@ -31,5 +31,7 @@ namespace n01618250_Assignment3.Models
         //teacher salary
         [Required(ErrorMessage = "Salary is required")]
         public string Salary { get; set; }
+
+        public List<Course> TaughtCourses { get; set; } = new List<Course>();
     }
 }

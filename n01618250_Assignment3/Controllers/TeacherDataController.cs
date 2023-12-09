@@ -102,6 +102,8 @@ namespace n01618250_Assignment3.Controllers
         [Route("api/TeacherData/FindTeacher/{TeacherId}")]
         public Teacher FindTeacher(int TeacherId)
         {
+            Teacher SelectedTeacher = new Teacher();
+            List<Course> Courses = new List<Course>();
             //create a connection
             MySqlConnection Conn = School.AccessDatabase();
 
@@ -112,34 +114,57 @@ namespace n01618250_Assignment3.Controllers
             MySqlCommand Command = Conn.CreateCommand();
 
             //command text SQL QUERY
-            Command.CommandText = "Select * from teachers where teacherid = " + TeacherId;
-
+            Command.CommandText = "SELECT t.teacherfname, t.teacherlname, t.employeenumber, t.hiredate, t.salary, c.classid, c.classcode, c.classname FROM teachers t JOIN classes c ON t.teacherid = c.teacherid WHERE t.teacherid = @id";
+            Command.Parameters.AddWithValue("@id", TeacherId);
+            Command.Prepare();
             //Get a Result Set for our response
             MySqlDataReader ResultSet = Command.ExecuteReader();
-
-            Teacher SelectedTeachers = new Teacher();
-
+            
             while (ResultSet.Read())
             {
+                //create a teacher object
+                //Teacher SelectedTeacher = new Teacher();
+                // Create a new Course object
+                Course course = new Course();
+                //SelectedTeacher.TaughtCourses = new List<Course>();
+                //get the teacher first name from database
+                string TeacherFName = ResultSet["teacherfname"].ToString();
+                //get the teacher last name from DB
+                string TeacherLName = ResultSet["teacherlname"].ToString();
+                //get the teacher employee number
+                string EmployeeNumber = ResultSet["employeenumber"].ToString();
                 //get the time that the teacher has been hired
-                //DateTime HireDate = (DateTime)(ResultSet["hiredate"]);
-                //string formattedDate = HireDate.ToString("dd-MMM-yyyy");
+                string HireDate = ResultSet["hiredate"].ToString();
+                //string formattedDate = HireDate.ToString("dd-MMM-yyyy", CultureInfo.InvariantCulture);
+                //get the salary that the teacher receives
+                string Salary = ResultSet["salary"].ToString();
 
                 //set the information for the object
-                SelectedTeachers.TeacherId = Convert.ToInt32(ResultSet["teacherid"]);
-                SelectedTeachers.TeacherFName = ResultSet["teacherfname"].ToString();
-                SelectedTeachers.TeacherLName = ResultSet["teacherlname"].ToString();
-                SelectedTeachers.EmployeeNumber = ResultSet["employeenumber"].ToString();
-                SelectedTeachers.HireDate = ResultSet["hiredate"].ToString();
-                SelectedTeachers.Salary = ResultSet["salary"].ToString();
+                SelectedTeacher.TeacherFName = TeacherFName;
+                SelectedTeacher.TeacherLName = TeacherLName;
+                SelectedTeacher.EmployeeNumber = EmployeeNumber;
+                SelectedTeacher.HireDate = HireDate;
+                SelectedTeacher.Salary = Salary;
 
+                
+                int ClassId = Convert.ToInt32(ResultSet["classid"]);
+                string ClassCode = ResultSet["classcode"].ToString();
+                string ClassName = ResultSet["classname"].ToString();
+                course.ClassId = ClassId;
+                course.ClassCode = ClassCode;
+                course.ClassName = ClassName; // Get the class name
+
+                SelectedTeacher.TaughtCourses.Add(course); // Add course to the teacher's list
+                // Add the course to the list
+                Courses.Add(course);
+                             
             }
 
             //close the connection
             Conn.Close();
 
             //return the Teachers
-            return SelectedTeachers;
+            return SelectedTeacher;
 
         }
 

@@ -28,8 +28,8 @@ namespace n01618250_Assignment3.Controllers
         // Get /Teacher/Show/{id}
         public ActionResult Show(int id)
         {
-            TeacherDataController controller = new TeacherDataController();
-            Teacher TeacherSelected = controller.FindTeacher(id);
+            TeacherDataController Controller = new TeacherDataController();
+            Teacher TeacherSelected = Controller.FindTeacher(id);
 
             // You should definitely not use SelectedTeachers in TeacherDataController file
             return View(TeacherSelected);
