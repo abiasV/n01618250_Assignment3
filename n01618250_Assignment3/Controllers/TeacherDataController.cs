@@ -7,6 +7,7 @@ using System.Web.Http;
 //use class Teacher
 using n01618250_Assignment3.Models;
 // use MySQL.Data
+using System.Globalization;
 using MySql.Data.MySqlClient;
 using System.Web.Http.Cors;
 using System.Diagnostics;
@@ -114,7 +115,7 @@ namespace n01618250_Assignment3.Controllers
             MySqlCommand Command = Conn.CreateCommand();
 
             //command text SQL QUERY
-            Command.CommandText = "SELECT t.teacherfname, t.teacherlname, t.employeenumber, t.hiredate, t.salary, c.classid, c.classcode, c.classname FROM teachers t JOIN classes c ON t.teacherid = c.teacherid WHERE t.teacherid = @id";
+            Command.CommandText = "SELECT t.teacherid, t.teacherfname, t.teacherlname, t.employeenumber, t.hiredate, t.salary FROM teachers t WHERE t.teacherid = @id";
             Command.Parameters.AddWithValue("@id", TeacherId);
             Command.Prepare();
             //Get a Result Set for our response
@@ -125,7 +126,7 @@ namespace n01618250_Assignment3.Controllers
                 //create a teacher object
                 //Teacher SelectedTeacher = new Teacher();
                 // Create a new Course object
-                Course course = new Course();
+                
                 //SelectedTeacher.TaughtCourses = new List<Course>();
                 //get the teacher first name from database
                 string TeacherFName = ResultSet["teacherfname"].ToString();
@@ -145,23 +146,50 @@ namespace n01618250_Assignment3.Controllers
                 SelectedTeacher.EmployeeNumber = EmployeeNumber;
                 SelectedTeacher.HireDate = HireDate;
                 SelectedTeacher.Salary = Salary;
-
+                SelectedTeacher.TeacherId = TeacherId;
                 
-                int ClassId = Convert.ToInt32(ResultSet["classid"]);
-                string ClassCode = ResultSet["classcode"].ToString();
-                string ClassName = ResultSet["classname"].ToString();
-                course.ClassId = ClassId;
-                course.ClassCode = ClassCode;
-                course.ClassName = ClassName; // Get the class name
+                // int ClassId = Convert.ToInt32(ResultSet["classid"]);
+               // string ClassCode = ResultSet["classcode"].ToString();
+               // string ClassName = ResultSet["classname"].ToString();
+               // course.ClassId = ClassId;
+               // course.ClassCode = ClassCode;
+               // course.ClassName = ClassName; // Get the class name
 
-                SelectedTeacher.TaughtCourses.Add(course); // Add course to the teacher's list
+                //SelectedTeacher.TaughtCourses.Add(course); // Add course to the teacher's list
                 // Add the course to the list
-                Courses.Add(course);
+                //Courses.Add(course);
                              
             }
 
             //close the connection
             Conn.Close();
+
+            Conn.Open();
+
+            Command.CommandText = "SELECT * FROM classes WHERE teacherid = @teacherID";
+            Command.Parameters.AddWithValue("@teacherID", TeacherId);
+            Command.Prepare();
+
+            MySqlDataReader ResultSetTwo = Command.ExecuteReader();
+
+            
+
+            while (ResultSetTwo.Read())
+            {
+
+                Course course = new Course();
+
+                int ClassId = Convert.ToInt32(ResultSetTwo["classid"]);
+                string ClassCode = ResultSetTwo["classcode"].ToString();
+                string ClassName = ResultSetTwo["classname"].ToString();
+                course.ClassId = ClassId;
+                course.ClassCode = ClassCode;
+                course.ClassName = ClassName;
+
+                SelectedTeacher.TaughtCourses.Add(course);
+
+            }
+
 
             //return the Teachers
             return SelectedTeacher;
